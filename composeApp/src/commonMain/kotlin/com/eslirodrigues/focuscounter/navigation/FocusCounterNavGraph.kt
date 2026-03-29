@@ -14,7 +14,14 @@ fun FocusCounterNavGraph(
     navController: NavHostController,
     onMenuClick: () -> Unit,
     isSoundEnabled: Boolean,
-    onSoundToggled: (Boolean) -> Unit
+    onSoundToggled: (Boolean) -> Unit,
+    isCountVisible: Boolean,
+    onCountVisibilityToggled: (Boolean) -> Unit,
+    isRandomColorEnabled: Boolean,
+    onRandomColorToggled: (Boolean) -> Unit,
+    count: Int,
+    onIncrementCount: () -> Unit,
+    onResetCount: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -23,7 +30,14 @@ fun FocusCounterNavGraph(
         composable<FocusCounterScreen> {
             FocusCounterScreen(
                 onMenuClick = onMenuClick,
-                isSoundEnabled = isSoundEnabled
+                isSoundEnabled = isSoundEnabled,
+                isCountVisible = isCountVisible,
+                onCountVisibilityToggled = onCountVisibilityToggled,
+                isRandomColorEnabled = isRandomColorEnabled,
+                onRandomColorToggled = onRandomColorToggled,
+                count = count,
+                onIncrementCount = onIncrementCount,
+                onResetCount = onResetCount
             )
         }
         composable<StatisticsScreen> {

@@ -1,12 +1,13 @@
 package com.eslirodrigues.focuscounter.counter
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,16 +22,20 @@ import kotlin.random.Random
 @Composable
 fun FocusCounterScreen(
     onMenuClick: () -> Unit,
-    isSoundEnabled: Boolean = false
+    isSoundEnabled: Boolean,
+    isCountVisible: Boolean,
+    onCountVisibilityToggled: (Boolean) -> Unit,
+    isRandomColorEnabled: Boolean,
+    onRandomColorToggled: (Boolean) -> Unit,
+    count: Int,
+    onIncrementCount: () -> Unit,
+    onResetCount: () -> Unit
 ) {
-    var count by rememberSaveable { mutableStateOf(0) }
-    var isCountVisible by rememberSaveable { mutableStateOf(true) }
-    var isRandomColorEnabled by rememberSaveable { mutableStateOf(false) }
-    
+    val haptic = LocalHapticFeedback.current
+    val scrollState = rememberScrollState()
+
     val defaultButtonColor = MaterialTheme.colorScheme.primary
     var currentButtonColor by remember { mutableStateOf(defaultButtonColor) }
-    
-    val haptic = LocalHapticFeedback.current
 
     Scaffold(
         topBar = {
@@ -48,7 +53,10 @@ fun FocusCounterScreen(
             modifier = Modifier.fillMaxSize().padding(padding),
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -56,15 +64,14 @@ fun FocusCounterScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = { isCountVisible = !isCountVisible }) {
+                    IconButton(onClick = { onCountVisibilityToggled(!isCountVisible) }) {
                         Icon(
                             imageVector = if (isCountVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                             contentDescription = if (isCountVisible) "Hide count" else "Show count"
                         )
                     }
                     IconButton(onClick = { 
-                        isRandomColorEnabled = !isRandomColorEnabled 
-                        if (!isRandomColorEnabled) currentButtonColor = defaultButtonColor
+                        onRandomColorToggled(!isRandomColorEnabled)
                     }) {
                         Icon(
                             imageVector = Icons.Default.Palette,
@@ -78,7 +85,7 @@ fun FocusCounterScreen(
 
                 Button(
                     onClick = {
-                        count++
+                        onIncrementCount()
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         if (isRandomColorEnabled) {
                             currentButtonColor = Color(
@@ -88,9 +95,7 @@ fun FocusCounterScreen(
                                 alpha = 1f
                             )
                         }
-                        if (isSoundEnabled) {
-                            playCounterSound()
-                        }
+                        if (isSoundEnabled) { playCounterSound() }
                     },
                     modifier = Modifier.size(300.dp),
                     shape = CircleShape,
@@ -110,10 +115,7 @@ fun FocusCounterScreen(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 IconButton(
-                    onClick = { 
-                        count = 0 
-                        if (!isRandomColorEnabled) currentButtonColor = defaultButtonColor
-                    },
+                    onClick = onResetCount,
                     modifier = Modifier.size(48.dp)
                 ) {
                     Icon(

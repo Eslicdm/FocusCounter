@@ -57,7 +57,13 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.material.icons.extended)
             implementation(libs.navigation.compose)
-            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.androidx.datastore.preferences)
+            implementation(libs.androidx.datastore)
+
+            // Koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

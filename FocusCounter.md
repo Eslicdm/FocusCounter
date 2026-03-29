@@ -8,6 +8,7 @@
 
 **Instructions:**
 * click the reset button to save the session (encourage message to click reset)
+* Tell the user to go to sound and enable system vibration
 
 **Tips:** 
 * use this app to avoid some unhealthy habit
@@ -38,8 +39,6 @@ class FocusSession(
 ```
 
 **Tasks**:
-* create a configuration screen and put in the navigation drawer
-* Option to enable sound when clicking;
 * count timestamps
 * Create an app icon
 
