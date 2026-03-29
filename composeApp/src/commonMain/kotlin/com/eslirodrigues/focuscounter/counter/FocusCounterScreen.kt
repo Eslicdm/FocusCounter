@@ -14,11 +14,15 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.eslirodrigues.focuscounter.configuration.playCounterSound
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FocusCounterScreen(onMenuClick: () -> Unit) {
+fun FocusCounterScreen(
+    onMenuClick: () -> Unit,
+    isSoundEnabled: Boolean = false
+) {
     var count by rememberSaveable { mutableStateOf(0) }
     var isCountVisible by rememberSaveable { mutableStateOf(true) }
     var isRandomColorEnabled by rememberSaveable { mutableStateOf(false) }
@@ -84,6 +88,9 @@ fun FocusCounterScreen(onMenuClick: () -> Unit) {
                                 alpha = 1f
                             )
                         }
+                        if (isSoundEnabled) {
+                            playCounterSound()
+                        }
                     },
                     modifier = Modifier.size(300.dp),
                     shape = CircleShape,
@@ -103,7 +110,10 @@ fun FocusCounterScreen(onMenuClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(32.dp))
 
                 IconButton(
-                    onClick = { count = 0 },
+                    onClick = { 
+                        count = 0 
+                        if (!isRandomColorEnabled) currentButtonColor = defaultButtonColor
+                    },
                     modifier = Modifier.size(48.dp)
                 ) {
                     Icon(

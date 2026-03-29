@@ -3,16 +3,17 @@ package com.eslirodrigues.focuscounter
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.eslirodrigues.focuscounter.navigation.FocusCounterNavGraph
-import com.eslirodrigues.focuscounter.navigation.FocusCounterNavRoutes.FocusCounterScreen
-import com.eslirodrigues.focuscounter.navigation.FocusCounterNavRoutes.StatisticsScreen
+import com.eslirodrigues.focuscounter.navigation.FocusCounterNavRoutes.*
 import com.eslirodrigues.focuscounter.theme.AppTheme
 import kotlinx.coroutines.launch
 
@@ -23,6 +24,8 @@ fun App() {
     val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+
+    var isSoundEnabled by rememberSaveable { mutableStateOf(false) }
 
     AppTheme {
         ModalNavigationDrawer(
@@ -54,12 +57,26 @@ fun App() {
                         },
                         modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                     )
+                    NavigationDrawerItem(
+                        icon = { Icon(Icons.Default.Settings, contentDescription = null) },
+                        label = { Text("Configuration") },
+                        selected = currentDestination?.route == ConfigurationScreen::class.qualifiedName,
+                        onClick = {
+                            navController.navigate(ConfigurationScreen) {
+                                popUpTo(FocusCounterScreen)
+                            }
+                            scope.launch { drawerState.close() }
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    )
                 }
             }
         ) {
             FocusCounterNavGraph(
                 navController = navController,
-                onMenuClick = { scope.launch { drawerState.open() } }
+                onMenuClick = { scope.launch { drawerState.open() } },
+                isSoundEnabled = isSoundEnabled,
+                onSoundToggled = { isSoundEnabled = it }
             )
         }
     }

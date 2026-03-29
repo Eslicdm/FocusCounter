@@ -10,4 +10,7 @@ sealed class FocusCounterNavRoutes {
 
     @Serializable @SerialName("Statistics")
     data object StatisticsScreen : FocusCounterNavRoutes()
+
+    @Serializable @SerialName("Configuration")
+    data object ConfigurationScreen : FocusCounterNavRoutes()
 }
