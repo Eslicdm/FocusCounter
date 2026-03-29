@@ -1,77 +1,66 @@
 package com.eslirodrigues.focuscounter
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.eslirodrigues.focuscounter.navigation.FocusCounterNavGraph
+import com.eslirodrigues.focuscounter.navigation.FocusCounterNavRoutes.FocusCounterScreen
+import com.eslirodrigues.focuscounter.navigation.FocusCounterNavRoutes.StatisticsScreen
 import com.eslirodrigues.focuscounter.theme.AppTheme
+import kotlinx.coroutines.launch
 
 @Composable
-@Preview
 fun App() {
+    val navController = rememberNavController()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
     AppTheme {
-        var count by rememberSaveable { mutableStateOf(0) }
-
-        val haptic = LocalHapticFeedback.current
-
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Button(
-                    onClick = {
-                        count++
-                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                    },
-                    modifier = Modifier.size(300.dp),
-                    shape = CircleShape,
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Text(
-                        text = count.toString(),
-                        style = MaterialTheme.typography.displayLarge.copy(
-                            fontSize = 64.sp
-                        )
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                ModalDrawerSheet {
+                    Spacer(Modifier.height(12.dp))
+                    NavigationDrawerItem(
+                        icon = { Icon(Icons.Default.Timer, contentDescription = null) },
+                        label = { Text("Focus Counter") },
+                        selected = currentDestination?.route == FocusCounterScreen::class.qualifiedName,
+                        onClick = {
+                            navController.navigate(FocusCounterScreen) {
+                                popUpTo(FocusCounterScreen) { inclusive = true }
+                            }
+                            scope.launch { drawerState.close() }
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                     )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                IconButton(
-                    onClick = { count = 0 },
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "Reset Counter",
+                    NavigationDrawerItem(
+                        icon = { Icon(Icons.Default.Analytics, contentDescription = null) },
+                        label = { Text("Statistics") },
+                        selected = currentDestination?.route == StatisticsScreen::class.qualifiedName,
+                        onClick = {
+                            navController.navigate(StatisticsScreen) {
+                                popUpTo(FocusCounterScreen)
+                            }
+                            scope.launch { drawerState.close() }
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                     )
                 }
             }
+        ) {
+            FocusCounterNavGraph(
+                navController = navController,
+                onMenuClick = { scope.launch { drawerState.open() } }
+            )
         }
     }
 }
