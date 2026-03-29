@@ -38,8 +38,7 @@ class FocusSession(
 ```
 
 **Tasks**:
-* Change theme
-* Option to show or hide the number (changes the button color) - create a visibility toggle eye icon;
+* create a configuration screen and put in the navigation drawer
 * Option to enable sound when clicking;
 * count timestamps
 * Create an app icon
