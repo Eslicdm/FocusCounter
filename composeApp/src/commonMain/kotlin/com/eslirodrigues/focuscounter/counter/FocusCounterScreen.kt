@@ -29,7 +29,8 @@ fun FocusCounterScreen(
     onRandomColorToggled: (Boolean) -> Unit,
     count: Int,
     onIncrementCount: () -> Unit,
-    onResetCount: () -> Unit
+    onResetCount: () -> Unit,
+    onSaveSession: () -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
     val scrollState = rememberScrollState()
@@ -44,6 +45,13 @@ fun FocusCounterScreen(
                 navigationIcon = {
                     IconButton(onClick = onMenuClick) {
                         Icon(Icons.Default.Menu, contentDescription = "Menu")
+                    }
+                },
+                actions = {
+                    if (count > 0) {
+                        IconButton(onClick = onSaveSession) {
+                            Icon(Icons.Default.Save, contentDescription = "Save Session")
+                        }
                     }
                 }
             )

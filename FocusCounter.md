@@ -23,22 +23,6 @@
 * Show the average time between clicks (per round/session and daily total);
 * Show the Focus Score (combination of total time with the lowest standard deviation between clicks);
 
-```kotlin
-@Entity 
-class FocusSession( 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) 
-    val id: Long? = null, 
-    val startTime: LocalDateTime, 
-    val endTime: LocalDateTime, 
-    val totalClicks: Int, 
-    @ElementCollection // Stores deltas in milliseconds between each click 
-    val intervals: List<Long>, 
-    val focusScore: Double, 
-    val userId: String 
-)
-```
-
 **Tasks**:
-* count timestamps
 * Create an app icon
 

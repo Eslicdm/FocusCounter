@@ -86,7 +86,8 @@ fun App() {
                 onRandomColorToggled = { viewModel.onAction(FocusCounterAction.ToggleRandomColor(it)) },
                 count = state.count,
                 onIncrementCount = { viewModel.onAction(FocusCounterAction.IncrementCount) },
-                onResetCount = { viewModel.onAction(FocusCounterAction.ResetCount) }
+                onResetCount = { viewModel.onAction(FocusCounterAction.ResetCount) },
+                onSaveSession = { viewModel.onAction(FocusCounterAction.SaveSession) }
             )
         }
     }

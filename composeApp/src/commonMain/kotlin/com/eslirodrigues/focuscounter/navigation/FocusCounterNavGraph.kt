@@ -21,7 +21,8 @@ fun FocusCounterNavGraph(
     onRandomColorToggled: (Boolean) -> Unit,
     count: Int,
     onIncrementCount: () -> Unit,
-    onResetCount: () -> Unit
+    onResetCount: () -> Unit,
+    onSaveSession: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -37,7 +38,8 @@ fun FocusCounterNavGraph(
                 onRandomColorToggled = onRandomColorToggled,
                 count = count,
                 onIncrementCount = onIncrementCount,
-                onResetCount = onResetCount
+                onResetCount = onResetCount,
+                onSaveSession = onSaveSession
             )
         }
         composable<StatisticsScreen> {
