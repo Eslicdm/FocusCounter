@@ -2,7 +2,7 @@ package com.eslirodrigues.focuscounter
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.*
@@ -23,6 +23,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun App() {
     val viewModel: FocusCounterViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
+    val todayStats by viewModel.todayStats.collectAsState()
     
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -49,11 +50,11 @@ fun App() {
                         modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                     )
                     NavigationDrawerItem(
-                        icon = { Icon(Icons.Default.Analytics, contentDescription = null) },
-                        label = { Text("Statistics") },
-                        selected = currentDestination?.route == StatisticsScreen::class.qualifiedName,
+                        icon = { Icon(Icons.Default.History, contentDescription = null) },
+                        label = { Text("History") },
+                        selected = currentDestination?.route == HistoryScreen::class.qualifiedName,
                         onClick = {
-                            navController.navigate(StatisticsScreen) {
+                            navController.navigate(HistoryScreen) {
                                 popUpTo(FocusCounterScreen)
                             }
                             scope.launch { drawerState.close() }
@@ -78,6 +79,7 @@ fun App() {
             FocusCounterNavGraph(
                 navController = navController,
                 onMenuClick = { scope.launch { drawerState.open() } },
+                onHistoryClick = { navController.navigate(HistoryScreen) },
                 isSoundEnabled = state.isSoundEnabled,
                 onSoundToggled = { viewModel.onAction(FocusCounterAction.ToggleSound(it)) },
                 isCountVisible = state.isCountVisible,
@@ -85,6 +87,7 @@ fun App() {
                 isRandomColorEnabled = state.isRandomColorEnabled,
                 onRandomColorToggled = { viewModel.onAction(FocusCounterAction.ToggleRandomColor(it)) },
                 count = state.count,
+                todayStats = todayStats,
                 onIncrementCount = { viewModel.onAction(FocusCounterAction.IncrementCount) },
                 onResetCount = { viewModel.onAction(FocusCounterAction.ResetCount) },
                 onSaveSession = { viewModel.onAction(FocusCounterAction.SaveSession) }

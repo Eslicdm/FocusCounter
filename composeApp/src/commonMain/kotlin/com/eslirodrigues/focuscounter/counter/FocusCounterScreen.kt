@@ -22,12 +22,14 @@ import kotlin.random.Random
 @Composable
 fun FocusCounterScreen(
     onMenuClick: () -> Unit,
+    onHistoryClick: () -> Unit,
     isSoundEnabled: Boolean,
     isCountVisible: Boolean,
     onCountVisibilityToggled: (Boolean) -> Unit,
     isRandomColorEnabled: Boolean,
     onRandomColorToggled: (Boolean) -> Unit,
     count: Int,
+    todayStats: TodayStats,
     onIncrementCount: () -> Unit,
     onResetCount: () -> Unit,
     onSaveSession: () -> Unit
@@ -64,10 +66,12 @@ fun FocusCounterScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(vertical = 16.dp),
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
+                TodayStatsCard(stats = todayStats, onHistoryClick = onHistoryClick)
+
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
@@ -89,8 +93,6 @@ fun FocusCounterScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Button(
                     onClick = {
                         onIncrementCount()
@@ -105,7 +107,7 @@ fun FocusCounterScreen(
                         }
                         if (isSoundEnabled) { playCounterSound() }
                     },
-                    modifier = Modifier.size(300.dp),
+                    modifier = Modifier.size(280.dp),
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = currentButtonColor)
@@ -119,8 +121,6 @@ fun FocusCounterScreen(
                         )
                     }
                 }
-
-                Spacer(modifier = Modifier.height(32.dp))
 
                 IconButton(
                     onClick = onResetCount,

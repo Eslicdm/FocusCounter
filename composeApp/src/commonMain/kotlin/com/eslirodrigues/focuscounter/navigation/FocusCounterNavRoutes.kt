@@ -8,6 +8,9 @@ sealed class FocusCounterNavRoutes {
     @Serializable @SerialName("FocusCounter")
     data object FocusCounterScreen : FocusCounterNavRoutes()
 
+    @Serializable @SerialName("History")
+    data object HistoryScreen : FocusCounterNavRoutes()
+
     @Serializable @SerialName("Statistics")
     data object StatisticsScreen : FocusCounterNavRoutes()
 

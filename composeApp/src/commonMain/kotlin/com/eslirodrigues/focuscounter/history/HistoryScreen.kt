@@ -1,4 +1,4 @@
-package com.eslirodrigues.focuscounter.statistics
+package com.eslirodrigues.focuscounter.history
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.eslirodrigues.focuscounter.database.FocusSessionEntity
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
@@ -21,16 +21,16 @@ import kotlin.time.DurationUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatisticsScreen(
+fun HistoryScreen(
     onMenuClick: () -> Unit,
-    viewModel: StatisticsViewModel = koinViewModel()
+    viewModel: HistoryViewModel = koinViewModel()
 ) {
     val sessions by viewModel.sessions.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Statistics") },
+                title = { Text("History") },
                 navigationIcon = {
                     IconButton(onClick = onMenuClick) {
                         Icon(Icons.Default.Menu, contentDescription = "Menu")
@@ -71,8 +71,8 @@ fun SessionCard(session: FocusSessionEntity) {
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text("Duration: ${duration.toComponents { hours, minutes, seconds, _ -> 
-                "${hours}h ${minutes}m ${seconds}s" 
+            Text("Duration: ${duration.toComponents { hours, minutes, seconds, _ ->
+                "${hours}h ${minutes}m ${seconds}s"
             }}")
             Text("Total Clicks: ${session.totalClicks}")
             Text("Mean Time Between Clicks: ${meanTime.toInt()} ms")

@@ -6,13 +6,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.eslirodrigues.focuscounter.navigation.FocusCounterNavRoutes.*
 import com.eslirodrigues.focuscounter.counter.FocusCounterScreen
-import com.eslirodrigues.focuscounter.statistics.StatisticsScreen
+import com.eslirodrigues.focuscounter.counter.TodayStats
+import com.eslirodrigues.focuscounter.history.HistoryScreen
 import com.eslirodrigues.focuscounter.configuration.ConfigurationScreen
 
 @Composable
 fun FocusCounterNavGraph(
     navController: NavHostController,
     onMenuClick: () -> Unit,
+    onHistoryClick: () -> Unit,
     isSoundEnabled: Boolean,
     onSoundToggled: (Boolean) -> Unit,
     isCountVisible: Boolean,
@@ -20,6 +22,7 @@ fun FocusCounterNavGraph(
     isRandomColorEnabled: Boolean,
     onRandomColorToggled: (Boolean) -> Unit,
     count: Int,
+    todayStats: TodayStats,
     onIncrementCount: () -> Unit,
     onResetCount: () -> Unit,
     onSaveSession: () -> Unit
@@ -31,19 +34,21 @@ fun FocusCounterNavGraph(
         composable<FocusCounterScreen> {
             FocusCounterScreen(
                 onMenuClick = onMenuClick,
+                onHistoryClick = onHistoryClick,
                 isSoundEnabled = isSoundEnabled,
                 isCountVisible = isCountVisible,
                 onCountVisibilityToggled = onCountVisibilityToggled,
                 isRandomColorEnabled = isRandomColorEnabled,
                 onRandomColorToggled = onRandomColorToggled,
                 count = count,
+                todayStats = todayStats,
                 onIncrementCount = onIncrementCount,
                 onResetCount = onResetCount,
                 onSaveSession = onSaveSession
             )
         }
-        composable<StatisticsScreen> {
-            StatisticsScreen(onMenuClick = onMenuClick)
+        composable<HistoryScreen> {
+            HistoryScreen(onMenuClick = onMenuClick)
         }
         composable<ConfigurationScreen> {
             ConfigurationScreen(

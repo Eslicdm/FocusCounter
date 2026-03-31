@@ -1,4 +1,4 @@
-package com.eslirodrigues.focuscounter.statistics
+package com.eslirodrigues.focuscounter.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
-class StatisticsViewModel(
+class HistoryViewModel(
     private val repository: FocusSessionRepository
 ) : ViewModel() {
     val sessions: StateFlow<List<FocusSessionEntity>> = repository.getAllSessions()

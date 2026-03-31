@@ -7,11 +7,14 @@ import com.eslirodrigues.focuscounter.database.FocusSessionRepository
 import com.eslirodrigues.focuscounter.datastore.DataStoreProvider
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.Instant
 import kotlin.math.log10
 import kotlin.math.pow
 import kotlin.math.sqrt
+import kotlin.time.Duration
 
 data class FocusCounterState(
     val count: Int = 0,
@@ -21,6 +24,19 @@ data class FocusCounterState(
     val startTime: Instant? = null,
     val intervals: List<Long> = emptyList(),
     val lastClickTime: Instant? = null
+)
+
+data class LastSessionStats(
+    val duration: Duration = Duration.ZERO,
+    val score: Double = 0.0,
+    val clicks: Int = 0
+)
+
+data class TodayStats(
+    val totalTime: Duration = Duration.ZERO,
+    val bestScore: Double = 0.0,
+    val highestClicks: Int = 0,
+    val lastSession: LastSessionStats? = null
 )
 
 sealed class FocusCounterAction {
@@ -50,6 +66,34 @@ class FocusCounterViewModel(
             isRandomColorEnabled = randomColor
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FocusCounterState())
+
+    val todayStats: StateFlow<TodayStats> = repository.getAllSessions()
+        .map { sessionList ->
+            val now = Clock.System.now()
+            val today = now.toLocalDateTime(TimeZone.currentSystemDefault()).date
+            val todaySessions = sessionList.filter {
+                it.startTime.toLocalDateTime(TimeZone.currentSystemDefault()).date == today
+            }
+
+            val lastSessionEntity = sessionList.maxByOrNull { it.startTime }
+            val lastSession = lastSessionEntity?.let {
+                LastSessionStats(
+                    duration = it.endTime - it.startTime,
+                    score = it.focusScore,
+                    clicks = it.totalClicks
+                )
+            }
+
+            if (todaySessions.isEmpty()) return@map TodayStats(lastSession = lastSession)
+
+            val totalDuration = todaySessions.fold(Duration.ZERO) { acc, session ->
+                acc + (session.endTime - session.startTime)
+            }
+            val bestScore = todaySessions.maxOfOrNull { it.focusScore } ?: 0.0
+            val highestClicks = todaySessions.maxOfOrNull { it.totalClicks } ?: 0
+
+            TodayStats(totalDuration, bestScore, highestClicks, lastSession)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TodayStats())
 
     fun onAction(action: FocusCounterAction) {
         when (action) {

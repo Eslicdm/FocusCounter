@@ -5,7 +5,7 @@ import com.eslirodrigues.focuscounter.counter.FocusCounterViewModel
 import com.eslirodrigues.focuscounter.database.AppDatabase
 import com.eslirodrigues.focuscounter.database.FocusSessionRepository
 import com.eslirodrigues.focuscounter.database.getRoomDatabase
-import com.eslirodrigues.focuscounter.statistics.StatisticsViewModel
+import com.eslirodrigues.focuscounter.history.HistoryViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -22,7 +22,7 @@ val dataModule = module {
 
 val viewModelModule = module {
     viewModelOf(::FocusCounterViewModel)
-    viewModelOf(::StatisticsViewModel)
+    viewModelOf(::HistoryViewModel)
 }
 
 val appModule = module {
